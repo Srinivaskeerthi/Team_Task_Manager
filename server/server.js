@@ -74,7 +74,7 @@ app.use(errorHandler);
 const clientDist = path.join(__dirname, '../client/dist');
 if (fs.existsSync(clientDist)) {
   app.use(express.static(clientDist));
-  app.get('*', (req, res) => {
+  app.get('/*splat', (req, res) => {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
