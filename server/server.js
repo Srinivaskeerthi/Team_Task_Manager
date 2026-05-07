@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import connectDB from './config/db.js';
 import { initSocket } from './config/socket.js';
 import errorHandler from './middleware/errorHandler.js';
@@ -23,6 +24,10 @@ dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 const app = express();
 const server = createServer(app);
@@ -65,17 +70,16 @@ app.get('/api/health', (req, res) => {
 // Error handler
 app.use(errorHandler);
 
-// Create uploads directory
-import fs from 'fs';
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+// Serve React client (production)
+const clientDist = path.join(__dirname, '../client/dist');
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 5000;
-app.use(express.static(path.join(__dirname, 'client/dist')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
-});
 server.listen(PORT, () => {
   console.log(`🚀 FlowSphere Server running on port ${PORT}`);
   console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
