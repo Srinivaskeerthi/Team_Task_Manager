@@ -90,6 +90,54 @@ The app will be available at:
 | Member | sarah@flowsphere.com | member123 |
 | Member | james@flowsphere.com | member123 |
 | Member | maya@flowsphere.com | member123 |
+---
+
+## 🐳 Docker Setup
+
+You can run the entire application, including the MongoDB database, inside Docker containers.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+- [Docker Compose](https://docs.docker.com/compose/install/) installed.
+
+### Quick Start with Docker Compose
+
+1. **Start all services** (starts the app and local MongoDB):
+   ```bash
+   docker compose up --build -d
+   ```
+   *The app will build the React frontend and start the Express server on **http://localhost:5000**.*
+
+2. **Seed the demo database**:
+   Run the seeding script inside the running container to populate the demo projects and users:
+   ```bash
+   docker compose exec app npm run seed
+   ```
+
+3. **Log in**:
+   Use the **Demo Credentials** below to log in on **http://localhost:5000**.
+
+4. **Stop the services**:
+   ```bash
+   docker compose down
+   ```
+
+### Standalone Docker Image
+
+If you want to build and run only the application container (pointing to an external MongoDB):
+
+1. **Build the image**:
+   ```bash
+   docker build -t flowsphere .
+   ```
+
+2. **Run the container**:
+   ```bash
+   docker run -d -p 5000:5000 \
+     -e MONGO_URI="your_mongodb_connection_string" \
+     -e JWT_SECRET="your_jwt_secret" \
+     flowsphere
+   ```
 
 ---
 

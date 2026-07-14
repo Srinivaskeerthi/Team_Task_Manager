@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+client/node_modules
+client/dist
+server/node_modules
+server/uploads
+.git
+.gitignore
+.env
+server/.env
+.agents
+.gemini
+README.md
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+*.log
